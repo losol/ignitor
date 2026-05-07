@@ -6,4 +6,6 @@
 
 export const scopes = {
   operationsRead: "operations.read",
+  maintenanceDatabaseWrite: "maintenance/database.write",
+  maintenanceDatabaseDestructive: "maintenance/database.destructive",
 } as const;
