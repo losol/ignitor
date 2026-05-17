@@ -16,7 +16,13 @@ updates:
         update-types:
           - minor
           - patch
-
+    # Pin @types/node major to the Node runtime declared in the Dockerfile
+    # and CI workflow. Otherwise Dependabot would advertise types for APIs
+    # that don't exist on the deployed Node version.
+    ignore:
+      - dependency-name: "@types/node"
+        update-types:
+          - version-update:semver-major
   - package-ecosystem: nuget
     directory: /
     schedule:
