@@ -7,7 +7,8 @@
 import { env } from "#app/env.server";
 import { Logger } from "#app/logger";
 
-import { joinFhirUrl, parseJson as parseJsonCore } from "./lib/fhir";
+import { parseJson as parseJsonCore } from "./lib/fhir";
+import { joinFhirUrl } from "./lib/fhir/http";
 
 const logger = Logger.create({ namespace: "fhir" });
 

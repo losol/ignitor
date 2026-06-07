@@ -9,7 +9,6 @@
  *
  */
 
-export { joinFhirUrl } from "./url";
 export { fhirHeaders } from "./headers";
 export { parseJson } from "./json";
 export type { JsonParseFailure, ParseJsonOptions } from "./json";

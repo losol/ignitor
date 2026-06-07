@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { joinFhirUrl } from "./url";
+import { fhirResourcePath, joinFhirUrl } from "./url";
 
 describe("joinFhirUrl", () => {
   it("resolves an endpoint under a base with an explicit path", () => {
@@ -37,5 +37,25 @@ describe("joinFhirUrl", () => {
   it("accepts a URL instance as the base", () => {
     expect(joinFhirUrl(new URL("https://api.example/fhir/"), "metadata").toString())
       .toBe("https://api.example/fhir/metadata");
+  });
+});
+
+describe("fhirResourcePath", () => {
+  it("builds a type-only path", () => {
+    expect(fhirResourcePath("Patient")).toBe("Patient");
+  });
+
+  it("builds a type/id path", () => {
+    expect(fhirResourcePath("Patient", "abc-123")).toBe("Patient/abc-123");
+  });
+
+  it("returns null for an invalid resource type", () => {
+    expect(fhirResourcePath("patient")).toBeNull();
+    expect(fhirResourcePath("Patient/../Secret")).toBeNull();
+  });
+
+  it("returns null for an invalid id", () => {
+    expect(fhirResourcePath("Patient", "a/b")).toBeNull();
+    expect(fhirResourcePath("Patient", "")).toBeNull();
   });
 });
