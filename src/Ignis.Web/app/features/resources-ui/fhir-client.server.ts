@@ -7,8 +7,8 @@
 import { fhirHeaders, resolveFhirUrl } from "#app/fhir.server";
 import {
   bundleResources,
-  type FhirBundle,
-} from "#app/lib/fhir";
+  type Bundle,
+} from "#app/lib/fhir/model";
 import { fhirResourcePath } from "#app/lib/fhir/http";
 import { Logger } from "#app/logger";
 
@@ -79,7 +79,7 @@ export async function fetchResourceCount(
     const url = resolveFhirUrl(request, `${path}?_summary=count`);
     const response = await fetch(url, { headers: fhirHeaders(accessToken) });
     if (!response.ok) return null;
-    const body = (await response.json()) as FhirBundle;
+    const body = (await response.json()) as Bundle;
     return body.total ?? null;
   } catch {
     return null;
@@ -114,7 +114,7 @@ export async function fetchResourceList(
     const response = await fetch(url, { headers: fhirHeaders(accessToken) });
     if (!response.ok) return null;
 
-    const body = (await response.json()) as FhirBundle;
+    const body = (await response.json()) as Bundle;
     return bundleResources(body)
       .map((resource) => ({
         id: typeof resource.id === "string" ? resource.id : "",
