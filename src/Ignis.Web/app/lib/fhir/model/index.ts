@@ -2,6 +2,7 @@ export { bundleResources } from "./bundle";
 export type { Bundle } from "./bundle";
 export type { Coding } from "./coding";
 export type { Meta } from "./meta";
+export { isResource } from "./resource";
 export type { Resource } from "./resource";
 export type {
   Canonical,

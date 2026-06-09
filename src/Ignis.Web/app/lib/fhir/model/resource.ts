@@ -24,3 +24,16 @@ export interface Resource<TResourceType extends string = string> {
   language?: Code;
   [key: string]: unknown;
 }
+
+/**
+ * Type guard for a FHIR resource: a non-null, non-array object carrying a
+ * string `resourceType`.
+ */
+export function isResource(value: unknown): value is Resource & { resourceType: string } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value) &&
+    typeof (value as Record<string, unknown>).resourceType === "string"
+  );
+}
