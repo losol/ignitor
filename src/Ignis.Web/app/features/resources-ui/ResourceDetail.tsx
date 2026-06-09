@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+import type { Resource } from "#app/lib/fhir/model";
+
 /**
  * Renders a single FHIR resource. Presentational only — the resource is passed
  * in as a prop, with no data fetching, router, or loader coupling, so the same
@@ -12,7 +14,7 @@
  * First version: raw JSON. Richer, field-aware rendering can replace the body
  * without changing this component's contract.
  */
-export function ResourceDetail({ resource }: { resource: Record<string, unknown> }) {
+export function ResourceDetail({ resource }: { resource: Resource }) {
   return (
     <pre className="overflow-x-auto rounded border border-(--border) p-4 text-sm">
       {JSON.stringify(resource, null, 2)}

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import type { Resource } from "./resource";
+import { isResource, type Resource } from "./resource";
 
 /** FHIR Bundle resource.
  * 
@@ -17,10 +17,6 @@ import type { Resource } from "./resource";
 export interface Bundle extends Resource<"Bundle"> {
   total?: number;
   entry?: { resource?: Resource }[];
-}
-
-function isResource(value: unknown): value is Resource {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /** Returns the resources carried by a FHIR Bundle's entries. */

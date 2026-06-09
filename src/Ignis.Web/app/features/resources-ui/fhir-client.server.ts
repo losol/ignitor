@@ -6,8 +6,10 @@
 
 import { fhirHeaders, resolveFhirUrl } from "#app/fhir.server";
 import {
-  bundleResources,
   type Bundle,
+  bundleResources,
+  isResource,
+  type Resource,
 } from "#app/lib/fhir/model";
 import { fhirResourcePath } from "#app/lib/fhir/http";
 import { Logger } from "#app/logger";
@@ -135,7 +137,7 @@ export async function fetchResource(
   accessToken: string | undefined,
   resourceType: string,
   id: string,
-): Promise<Record<string, unknown> | null> {
+): Promise<Resource | null> {
   const path = fhirResourcePath(resourceType, id);
   if (path === null) {
     logger.warn(
@@ -151,10 +153,8 @@ export async function fetchResource(
     if (!response.ok) return null;
 
     const body: unknown = await response.json();
-    if (typeof body !== "object" || body === null || Array.isArray(body)) {
-      return null;
-    }
-    return body as Record<string, unknown>;
+    if (!isResource(body)) return null;
+    return body;
   } catch {
     return null;
   }
