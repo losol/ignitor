@@ -1,8 +1,5 @@
 export { bundleResources } from "./bundle";
-export type {
-  FhirBundle,
-  FhirBundleEntry,
-} from "./bundle";
+export type { Bundle } from "./bundle";
 export type { Coding } from "./coding";
 export type { Meta } from "./meta";
 export type { Resource } from "./resource";
