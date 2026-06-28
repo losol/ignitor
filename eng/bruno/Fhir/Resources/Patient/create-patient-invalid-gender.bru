@@ -1,0 +1,39 @@
+meta {
+  name: Create Patient (invalid gender code)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{fhirBase}}/Patient
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/fhir+json
+}
+
+body:json {
+  {
+    "resourceType": "Patient",
+    "name": [
+      {
+        "family": "Losvik"
+      }
+    ],
+    "gender": "mann"
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.resourceType: eq OperationOutcome
+}
+
+docs {
+  `gender` is bound (required) to the `AdministrativeGender` value set, so an
+  arbitrary string is rejected at parse time. Expect `400` with an
+  `OperationOutcome` issue pointing at the element: `severity: error`,
+  `code: code-invalid`, `expression: ["Patient.gender"]`.
+}

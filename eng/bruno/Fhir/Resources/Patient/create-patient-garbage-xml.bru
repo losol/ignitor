@@ -1,0 +1,29 @@
+meta {
+  name: Create Patient (garbage body, XML route)
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{fhirBase}}/Patient
+  body: text
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/fhir+xml
+  Accept: application/fhir+xml
+}
+
+body:text {
+  this is not xml
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  Body that is not XML at all, sent as `application/fhir+xml`. Expect
+  `400 Bad Request` with an `OperationOutcome` carrying the parser message.
+}

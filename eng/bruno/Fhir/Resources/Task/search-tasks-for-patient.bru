@@ -1,0 +1,21 @@
+meta {
+  name: Search Tasks for patient
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{fhirBase}}/Task?patient=Patient/{{patientId}}
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.resourceType: eq Bundle
+}
+
+docs {
+  All tasks where `Task.for` references the patient (the `patient` search
+  parameter). Expect `200` with a `searchset` `Bundle`.
+}

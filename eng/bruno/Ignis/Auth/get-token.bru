@@ -1,0 +1,38 @@
+meta {
+  name: Get token
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{tokenUrl}}
+  body: formUrlEncoded
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+body:form-urlencoded {
+  grant_type: client_credentials
+  client_id: {{clientId}}
+  client_secret: {{clientSecret}}
+}
+
+script:post-response {
+  // Store the token so the collection's Bearer auth ({{accessToken}}) can use it.
+  if (res.body && res.body.access_token) {
+    bru.setVar("accessToken", res.body.access_token);
+  }
+}
+
+docs {
+  Fetches an access token from `/connect/token` (OAuth2 `client_credentials`) and
+  stores it in the `accessToken` runtime variable. The collection's Bearer auth
+  uses `{{accessToken}}`, so **run this first** — and again whenever the token
+  expires (other requests start returning 401).
+
+  Debugging: `invalid_client` here means `clientSecret` is wrong/empty;
+  `unsupported_grant_type` means the client lacks the client_credentials grant.
+}

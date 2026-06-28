@@ -1,0 +1,17 @@
+meta {
+  name: Capability statement
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{fhirBase}}/metadata
+  body: none
+  auth: inherit
+}
+
+docs {
+  Server `CapabilityStatement`. Requires auth (the fallback policy protects every
+  FHIR endpoint), so a 401 here means the OAuth token wasn't acquired — check the
+  `local` environment and that `clientSecret` is set.
+}

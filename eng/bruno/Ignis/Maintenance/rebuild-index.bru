@@ -1,0 +1,20 @@
+meta {
+  name: Rebuild index
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{fhirBase}}/$rebuild-index
+  body: none
+  auth: inherit
+}
+
+docs {
+  `$rebuild-index` — rebuilds the search index from current store contents.
+
+  Scope-gated: requires `maintenance/database.write`. The default token carries no
+  scopes, so this returns 403 until you use a scoped token — grant the scope on
+  the dev client and add it to the **Get token** body, then re-run Get token. See
+  the README "Scopes" section.
+}

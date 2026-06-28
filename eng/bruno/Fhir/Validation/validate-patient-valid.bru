@@ -1,0 +1,44 @@
+meta {
+  name: Validate Patient (valid)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{fhirBase}}/Patient/$validate
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/fhir+json
+}
+
+body:json {
+  {
+    "resourceType": "Patient",
+    "name": [
+      {
+        "family": "Test",
+        "given": ["Ada"]
+      }
+    ],
+    "gender": "female",
+    "birthDate": "1990-01-01"
+  }
+}
+
+vars:pre-request {
+  baseUrl: https://localhost:5201/
+}
+
+docs {
+  Validates against the base `Patient` type (no `profile` parameter). Expect
+  `200 OK` with an `OperationOutcome` whose only issue is `information`
+  ("all OK").
+  
+  Note: Spark parses the request body strictly and rejects structurally-invalid
+  resources (e.g. a missing required element) with a `400` *before* the validator
+  runs — so `$validate` cannot yet report base-cardinality violations. Reporting
+  those needs permissive parsing on this endpoint (deferred follow-up).
+}

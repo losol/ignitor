@@ -1,0 +1,40 @@
+meta {
+  name: Create Questionnaire (invalid status code)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{fhirBase}}/Questionnaire
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/fhir+json
+}
+
+body:json {
+  {
+    "resourceType": "Questionnaire",
+    "status": "published",
+    "item": [
+      {
+        "linkId": "q1",
+        "text": "Do you smoke?",
+        "type": "boolean"
+      }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.resourceType: eq OperationOutcome
+}
+
+docs {
+  `status` must be a code from `PublicationStatus` (`draft`, `active`,
+  `retired`, `unknown`). Expect `400` with an issue at
+  `expression: ["Questionnaire.status"]`.
+}

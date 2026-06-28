@@ -1,0 +1,21 @@
+meta {
+  name: Clear store (destructive)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{fhirBase}}/$clear-store
+  body: none
+  auth: inherit
+}
+
+docs {
+  ⚠️ DESTRUCTIVE — `$clear-store` wipes the entire FHIR store. Dev/test only.
+
+  Scope-gated: requires `maintenance/database.destructive`, and is additionally
+  guarded by the `AllowClearStore` feature flag (returns `404 Unknown operation`
+  when off). The default token carries no scopes (403 until scoped). Grant the
+  scope on the dev client, add it to the **Get token** body and re-run, and enable
+  the flag in `appsettings.local.json`. See the README "Scopes" section.
+}

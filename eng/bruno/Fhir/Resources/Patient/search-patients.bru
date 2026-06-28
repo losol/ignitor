@@ -1,0 +1,21 @@
+meta {
+  name: Search Patients
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{fhirBase}}/Patient?name=Losen&_count=10
+  body: none
+  auth: inherit
+}
+
+params:query {
+  name: Losen
+  _count: 10
+}
+
+docs {
+  Type-level search. Returns a `Bundle` of `Patient` resources matching the query
+  parameters. Adjust `name`/`_count` or add other FHIR search params as needed.
+}

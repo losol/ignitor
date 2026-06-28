@@ -1,0 +1,35 @@
+meta {
+  name: Create Patient (invalid gender code, XML)
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{fhirBase}}/Patient
+  body: xml
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/fhir+xml
+  Accept: application/fhir+xml
+}
+
+body:xml {
+  <Patient xmlns="http://hl7.org/fhir">
+    <name>
+      <family value="Losvik"/>
+    </name>
+    <gender value="bogus"/>
+  </Patient>
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  XML route, same invalid `gender` code as the JSON example. Expect `400` with
+  an `OperationOutcome` (as XML, per the `Accept` header) whose issue points at
+  `Patient.gender`.
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Archive import limits
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{fhirBase}}/$archive-import
+  body: none
+  auth: inherit
+}
+
+docs {
+  Returns the configured upload limits as a `Parameters` resource
+  (`maxUploadSizeBytes`), so you can validate an archive before sending it.
+
+  Scope-gated: requires `operations.import`, and the `AllowImport` feature flag
+  must be on (else `503`). The default token carries no scopes (403 until scoped) —
+  grant the scope on the dev client and add it to the **Get token** body, then
+  re-run Get token. See the README "Scopes" section.
+}

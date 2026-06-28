@@ -1,0 +1,37 @@
+meta {
+  name: Create Patient (multiple invalid elements)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{fhirBase}}/Patient
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/fhir+json
+}
+
+body:json {
+  {
+    "resourceType": "Patient",
+    "gender": "bogus",
+    "birthDate": "not-a-date",
+    "active": true
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.resourceType: eq OperationOutcome
+}
+
+docs {
+  Two bad elements in one body. Expect `400` with one issue per element — the
+  parser does not stop at the first error:
+
+  - `expression: ["Patient.gender"]` — invalid code
+  - `expression: ["Patient.birthDate"]` — invalid date literal
+}

@@ -1,0 +1,29 @@
+headers {
+  Accept: application/fhir+json
+}
+
+auth {
+  mode: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+docs {
+  # Ignitor FHIR API
+  
+  Manual, interactive exploration of the Ignis FHIR API.
+  
+  Auth: run **Ignis → Auth → Get token** once. Its post-response script stores the access
+  token in the `accessToken` runtime variable, and every request inherits
+  `Bearer {{accessToken}}` from the collection (`auth: inherit`). Re-run Get token
+  when the token expires (you'll see 401s). `clientId` comes from the committed
+  `local` environment; `clientSecret` is a Bruno **secret variable** — set it once
+  in the environment editor (the dev value matches the `ignis-client` client in
+  `appsettings.json`), and its value is never written to the committed files.
+  
+  Select the **ignis-local** environment before sending requests. Both `baseUrl` and
+  `tokenUrl` target `https://localhost:5201`; disable TLS verification for the
+  collection (self-signed dev cert).
+}

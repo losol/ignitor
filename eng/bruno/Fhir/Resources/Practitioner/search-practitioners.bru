@@ -1,0 +1,21 @@
+meta {
+  name: Search Practitioners by name
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{fhirBase}}/Practitioner?name=Hansen
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.resourceType: eq Bundle
+}
+
+docs {
+  Expect `200` with a `searchset` `Bundle` containing the practitioners
+  created above.
+}

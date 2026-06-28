@@ -1,0 +1,22 @@
+meta {
+  name: Read Questionnaire
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{fhirBase}}/Questionnaire/{{questionnaireId}}
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.resourceType: eq Questionnaire
+}
+
+docs {
+  Reads the questionnaire created in **Create Questionnaire (valid)** — run
+  that first so `questionnaireId` is set. Expect `200` with `meta.versionId`
+  and an `ETag` header.
+}

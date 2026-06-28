@@ -1,0 +1,35 @@
+meta {
+  name: Create Patient (wrong element order, XML)
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{fhirBase}}/Patient
+  body: xml
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/fhir+xml
+  Accept: application/fhir+xml
+}
+
+body:xml {
+  <Patient xmlns="http://hl7.org/fhir">
+    <gender value="female"/>
+    <name>
+      <family value="Losvik"/>
+    </name>
+  </Patient>
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  An XML-only gotcha: element order is significant in FHIR XML, and `name` must
+  precede `gender`. Expect `400` with an issue like *Element 'name' is not in
+  the correct order* — the same body as JSON would be accepted.
+}

@@ -1,0 +1,28 @@
+meta {
+  name: Archive import
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{fhirBase}}/$archive-import
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  file: @file(path/to/archive.zip)
+}
+
+docs {
+  Uploads a zip archive of FHIR resources for background ingestion. The form field
+  must be named `file` (`[FromForm] IFormFile file`). Set the path in the
+  `body:multipart-form` block to a real `.zip` on disk before sending. Expect
+  `202 Accepted` with an `OperationOutcome` carrying the operation id; progress is
+  reported on the operations SignalR hub.
+
+  Scope-gated: requires `operations.import`, and the `AllowImport` feature flag
+  must be on. The default token carries no scopes (403 until scoped) — grant the
+  scope on the dev client and add it to the **Get token** body, then re-run Get
+  token. See the README "Scopes" section.
+}
