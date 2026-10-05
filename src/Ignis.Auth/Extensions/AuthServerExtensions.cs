@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 using MongoDB.Driver;
@@ -121,6 +122,10 @@ public static class AuthServerExtensions
                 options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
                 options.ClaimActions.MapJsonKey("urn:github:avatar", "avatar_url");
 
+                // Handle failed OAuth handshakes by starting over the login process.
+                options.Events.OnRemoteFailure =
+                    context => StartOverAfterFailedHandshake(context, provider.Name);
+
                 options.Events.OnCreatingTicket = async context =>
                 {
                     using var request = new HttpRequestMessage(HttpMethod.Get, context.Options.UserInformationEndpoint);
@@ -134,6 +139,25 @@ public static class AuthServerExtensions
                 };
             });
     }
+
+    // Start over the login process after a failed handshake.
+    private static Task StartOverAfterFailedHandshake(RemoteFailureContext context, string providerName)
+    {
+        foreach (var cookie in context.Request.Cookies.Keys.Where(IsHandshakeCookie))
+            context.Response.Cookies.Delete(cookie);
+
+        context.HttpContext.RequestServices
+            .GetRequiredService<ILoggerFactory>()
+            .CreateLogger("Ignis.Auth.ExternalLogin")
+            .LogWarning(context.Failure, "Sign-in with {Provider} could not be completed.", providerName);
+
+        context.HandleResponse();
+        context.Response.Redirect("/connect/login");
+        return Task.CompletedTask;
+    }
+
+    private static bool IsHandshakeCookie(string name) =>
+        name.StartsWith(".AspNetCore.Correlation.", StringComparison.Ordinal);
 
     private static void AddOidcProvider(this IServiceCollection services, ExternalProviderSettings provider)
     {

@@ -41,6 +41,29 @@ public class ExternalAuthProviderTests : IClassFixture<IntegrationFixture>
     }
 
     [Fact]
+    public async Task Callback_WithUnreadableState_SendsTheReaderBackToSignIn()
+    {
+        using var client = _fixture.ExternalAuthProviderFactory.CreateClient(new WebApplicationFactoryClientOptions
+        {
+            AllowAutoRedirect = false,
+        });
+
+        using var request = new HttpRequestMessage(
+            HttpMethod.Get, "/connect/login-callback-github?code=abc&state=unreadable");
+        // The handshake cookie a replaced key ring leaves behind: it can't be read,
+        // so without this the callback throws and the browser bounces.
+        request.Headers.Add("Cookie", ".AspNetCore.Correlation.GitHub.pJ2k=stale");
+
+        var response = await client.SendAsync(request, CT);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Redirect,
+            await response.Content.ReadAsStringAsync(CT));
+        response.Headers.Location!.OriginalString.Should().Be("/connect/login");
+        response.Headers.GetValues("Set-Cookie").Should().Contain(cookie =>
+            cookie.StartsWith(".AspNetCore.Correlation.GitHub.pJ2k=;", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public async Task Login_WithUnconfiguredProvider_ReturnsError()
     {
         using var client = _fixture.Factory.CreateClient(new WebApplicationFactoryClientOptions
